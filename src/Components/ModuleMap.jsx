@@ -9,7 +9,7 @@ import {
 
 export default function ModuleMap() {
   const navigate = useNavigate();
-  const { isCompleted, resetProgress } = useUser();
+  const { isCompleted, resetProgress, investorProfile } = useUser();
 
   const completedCount = MODULES.filter(m => isCompleted(m.id)).length;
   const totalAvailable = MODULES.filter(m => m.status === "available").length;
@@ -22,6 +22,21 @@ export default function ModuleMap() {
 
   return (
     <div style={{ background: BG, minHeight: "100vh", padding: "28px 20px 80px", maxWidth: 800, margin: "0 auto" }}>
+
+      {investorProfile && (
+        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 8 }}>
+          <button
+            onClick={() => { if (window.confirm("Sign out and clear all progress?")) resetProgress(); }}
+            style={{
+              background: "none", border: "1px solid " + BORDER, borderRadius: 8,
+              padding: "6px 14px", fontFamily: FM, fontSize: 10, color: TM,
+              textTransform: "uppercase", letterSpacing: "0.1em", cursor: "pointer"
+            }}
+          >
+            Sign Out
+          </button>
+        </div>
+      )}
 
       <div style={{ textAlign: "center", padding: "24px 0 32px" }}>
         <div style={{ fontFamily: FM, fontSize: 10, color: GOLD, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 8 }}>

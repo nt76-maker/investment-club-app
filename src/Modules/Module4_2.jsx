@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "../context/UserContext";
 import { ChevronRight, TrendingUp, RotateCcw, AlertCircle, Play, SkipForward, Lock } from "lucide-react";
 
 // ── COLOR SYSTEM ─────────────────────────────────────────────────
@@ -706,7 +708,7 @@ const SummaryRow = ({ s, r }) => {
 };
 
 // ── SUMMARY ───────────────────────────────────────────────────────
-const Summary = ({ results, onRestart }) => {
+const Summary = ({ results, onRestart, onMap }) => {
   const done = results.filter(Boolean);
   const userWins = done.filter(r=>r.userRet>r.ctrlRet).length;
   const ctrlWins = done.length-userWins;
@@ -762,8 +764,8 @@ const Summary = ({ results, onRestart }) => {
           </div>
         </Card>
         <div style={{ display:"flex", gap:"10px", justifyContent:"center", marginTop:"16px", flexWrap:"wrap" }}>
-          <Btn onClick={onRestart}><RotateCcw size={14}/> Try a Different Allocation</Btn>
-          <Btn outline onClick={onRestart}>Start Over</Btn>
+          <Btn onClick={onMap} style={{marginBottom:8}}>← Module Map</Btn>
+          <Btn onClick={onRestart} outline><RotateCcw size={14}/> Try a Different Allocation</Btn>
         </div>
       </Page>
     </div>
@@ -772,6 +774,8 @@ const Summary = ({ results, onRestart }) => {
 
 // ── APP ────────────────────────────────────────────────────────────
 export default function Module4_2() {
+  const navigate = useNavigate();
+  const { completeModule } = useUser();
   const [screen, setScreen] = useState("gate");
   const [profile, setProfile] = useState(null);
   const [alloc, setAlloc] = useState({ ...PROFILE_DEFAULTS.sailor });
@@ -790,7 +794,7 @@ export default function Module4_2() {
     setResults(nr);
     const next = currentIdx+1;
     setCurrentIdx(next);
-    if(next>=5) go("summary");
+    if(next>=5) { completeModule("4.2"); go("summary"); }
     else go("builder");
   };
 
@@ -811,7 +815,7 @@ export default function Module4_2() {
     <ScenarioFlow scenario={SCENARIOS[currentIdx]} userAlloc={alloc} onFinish={handleScenarioFinish}/>
   );
   if(screen==="summary") return (
-    <Summary results={results} onRestart={handleRestart}/>
+    <Summary results={results} onRestart={handleRestart} onMap={()=>navigate("/")}/>
   );
   return null;
 }

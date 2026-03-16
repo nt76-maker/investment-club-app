@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "../context/UserContext";
 import { TrendingUp, DollarSign, Clock, Target, ChevronRight, ChevronLeft, CheckCircle, XCircle, BarChart2, RefreshCw, Play, Pause, ArrowDown, ArrowUp, Minus, BookOpen, Zap, Award } from "lucide-react";
 import { GOLD, AMBER, GREEN, RED, BLUE, PURPLE, SLATE, BG, SURF, SURF2, BORDER, BORDERHI, TP, TB, TM, FD, FB, FM } from "../theme";
 import { Card, SL, H1, H2, Body, Btn, Page, VT } from "../components/ui";
@@ -1176,7 +1178,7 @@ const QuizScreen = ({ onNext }) => {
     </Page>
   );
 };
-const ResultsScreen = ({ score, onRestart }) => {
+const ResultsScreen = ({ score, onRestart, onMap }) => {
   const pct = Math.round((score / QUIZ.length) * 100);
   const grade = pct >= 80 ? { label: "Outstanding", color: GREEN, emoji: "🏆" }
     : pct >= 60 ? { label: "Solid Foundation", color: GOLD, emoji: "⭐" }
@@ -1219,7 +1221,7 @@ const ResultsScreen = ({ score, onRestart }) => {
       </div>
 
       <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
-        <Btn outline onClick={onRestart} small color={SLATE}>↺ Review Module</Btn>
+        <Btn onClick={onMap} small style={{marginRight:8}}>← Module Map</Btn><Btn outline onClick={onRestart} small color={SLATE}>↺ Review Module</Btn>
         <Btn color={PURPLE} onClick={() => {}}>Module 6 →</Btn>
       </div>
 
@@ -1232,6 +1234,8 @@ const ResultsScreen = ({ score, onRestart }) => {
   );
 };
 export default function Module5() {
+  const navigate = useNavigate();
+  const { completeModule } = useUser();
   const [screen, setScreen] = useState("opening");
   const [quizScore, setQuizScore] = useState(0);
   const go = s => { setScreen(s); window.scrollTo(0, 0); };
@@ -1242,7 +1246,7 @@ export default function Module5() {
   if (screen === "horizon") return <TimeHorizonScreen onNext={() => go("dcaexplain")} onBack={() => go("fees")} />;
   if (screen === "dcaexplain") return <DCAExplainScreen onNext={() => go("dca")} onBack={() => go("horizon")} />;
   if (screen === "dca") return <DCAScreen onNext={() => go("quiz")} onBack={() => go("dcaexplain")} />;
-  if (screen === "quiz") return <QuizScreen onNext={s => { setQuizScore(s); go("results"); }} />;
-  if (screen === "results") return <ResultsScreen score={quizScore} onRestart={() => go("opening")} />;
+  if (screen === "quiz") return <QuizScreen onNext={s => { setQuizScore(s); completeModule("5"); go("results"); }} />;
+  if (screen === "results") return <ResultsScreen score={quizScore} onRestart={() => go("opening")} onMap={()=>navigate("/")} />;
   return null;
 }

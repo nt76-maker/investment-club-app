@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "../context/UserContext";
 import { ChevronRight, TrendingUp, Clock, CheckCircle, RotateCcw } from "lucide-react";
 
 const GOLD="#D4A017", AMBER="#D97706", SLATE="#94A3B8", GREEN="#22C55E", RED="#EF4444";
@@ -752,7 +754,7 @@ const Quiz = ({ onFinish }) => {
 };
 
 // RESULTS
-const Results = ({ score, total, onRestart }) => {
+const Results = ({ score, total, onRestart, onMap }) => {
   const pct = Math.round((score/total)*100);
   const vocab = ["stock_exchange","liquidity","bull_market","bear_market","correction","sp500","dow","nasdaq","benchmark","sentiment","expectations","crash"];
   return (
@@ -784,7 +786,7 @@ const Results = ({ score, total, onRestart }) => {
         <Body style={{ marginBottom:0, color:TM }}>You now know what to invest in and how the market works. Next — how do you actually build a portfolio? How much of each asset should you own, and how do you know when to change it?</Body>
       </Card>
       <div style={{ display:"flex", justifyContent:"center", marginTop:"32px" }}>
-        <Btn onClick={onRestart}><RotateCcw size={14}/> Restart Module</Btn>
+        <Btn onClick={onMap} style={{marginRight:8}}>← Module Map</Btn><Btn onClick={onRestart} outline><RotateCcw size={14}/> Restart Module</Btn>
       </div>
     </Page>
   );
@@ -792,6 +794,8 @@ const Results = ({ score, total, onRestart }) => {
 
 // APP
 export default function Module3() {
+  const navigate = useNavigate();
+  const { completeModule } = useUser();
   const [screen, setScreen] = useState("opening");
   const [score, setScore] = useState(0);
   const go = s => { setScreen(s); window.scrollTo(0,0); };
@@ -804,8 +808,8 @@ export default function Module3() {
     s4:<S4 onNext={()=>go("s5")}/>, s5:<S5 onNext={()=>go("s6")}/>, s6:<S6 onNext={()=>go("s7")}/>,
     s7:<S7 onNext={()=>go("sc1")}/>,
     sc1:<SC1 onNext={()=>go("sc2")}/>, sc2:<SC2 onNext={()=>go("sc3")}/>, sc3:<SC3 onNext={()=>go("quiz")}/>,
-    quiz:<Quiz onFinish={s=>{ setScore(s); go("results"); }}/>,
-    results:<Results score={score} total={3} onRestart={()=>go("opening")}/>,
+    quiz:<Quiz onFinish={s=>{ setScore(s); completeModule("3"); go("results"); }}/>,
+    results:<Results score={score} total={3} onRestart={()=>go("opening")} onMap={()=>{ completeModule("3"); navigate("/"); }}/>,
   };
   return (
     <div style={{ minHeight:"100vh", background:BG, fontFamily:FB, color:TB }}>

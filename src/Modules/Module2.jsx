@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "../context/UserContext";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from "recharts";
 import { ChevronRight, TrendingUp, Clock, BookOpen, CheckCircle, RotateCcw, Home } from "lucide-react";
 
@@ -624,6 +626,8 @@ const Results = ({ score, total, userName, onRestart, onMap }) => {
 
 // ── APP ───────────────────────────────────────
 export default function Module2() {
+  const navigate = useNavigate();
+  const { completeModule } = useUser();
   const [screen, setScreen] = useState("opening");
   const [score, setScore] = useState(0);
   const userName = "Investor";
@@ -637,8 +641,8 @@ export default function Module2() {
     s4:<S4 onNext={()=>go("s5")}/>, s5:<S5 onNext={()=>go("s6")}/>, s6:<S6 onNext={()=>go("s7")}/>,
     s7:<S7 onNext={()=>go("sc1")}/>,
     sc1:<SC1 onNext={()=>go("sc2")}/>, sc2:<SC2 onNext={()=>go("sc3")}/>, sc3:<SC3 onNext={()=>go("quiz")}/>,
-    quiz:<Quiz onFinish={s=>{setScore(s);go("results");}}/>,
-    results:<Results score={score} total={3} userName={userName} onRestart={()=>go("opening")} onMap={()=>go("opening")}/>,
+    quiz:<Quiz onFinish={s=>{setScore(s);completeModule("2");go("results")}}/>,
+    results:<Results score={score} total={3} userName={userName} onRestart={()=>go("opening")} onMap={()=>{ completeModule("2"); navigate("/"); }}/>,
   };
   return (
     <div style={{ minHeight:"100vh", background:C.bg, fontFamily:FB, color:C.textBody }}>

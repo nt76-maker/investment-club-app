@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "../context/UserContext";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Area, AreaChart } from "recharts";
 import { ChevronRight, TrendingUp, Clock, Users, BookOpen, CheckCircle, RotateCcw, Home, AlertTriangle } from "lucide-react";
 
@@ -866,6 +868,8 @@ const Results = ({ score, total, userName, onRestart, onMap }) => {
 // APP ROOT
 // ─────────────────────────────────────────────
 export default function Module1() {
+  const navigate = useNavigate();
+  const { completeModule } = useUser();
   const [screen,    setScreen]    = useState("welcome");
   const [userName,  setUserName]  = useState("");
   const [quizScore, setQuizScore] = useState(0);
@@ -886,8 +890,8 @@ export default function Module1() {
     s5:      <Section5  onNext={() => go("sc1")} />,
     sc1:     <Scenario1 onNext={() => go("sc2")} />,
     sc2:     <Scenario2 onNext={() => go("quiz")} />,
-    quiz:    <Quiz      onFinish={s => { setQuizScore(s); go("results"); }} />,
-    results: <Results   score={quizScore} total={3} userName={userName} onRestart={() => go("s1")} onMap={() => go("map")} />,
+    quiz:    <Quiz      onFinish={s => { setQuizScore(s); completeModule("1"); go("results"); }} />,
+    results: <Results   score={quizScore} total={3} userName={userName} onRestart={() => go("s1")} onMap={() => { completeModule("1"); navigate("/"); }} />,
   };
 
   return (

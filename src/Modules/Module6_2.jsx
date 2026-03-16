@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "../context/UserContext";
 import { Brain, AlertTriangle, TrendingDown, TrendingUp, RefreshCw, CheckCircle, XCircle, Award } from "lucide-react";
 import { GOLD, AMBER, GREEN, RED, BLUE, PURPLE, SLATE, BG, SURF, SURF2, BORDER, BORDERHI, TP, TB, TM, FD, FB, FM } from "../theme";
 import { Card, SL, H1, H2, Body, Btn, Page, VT } from "../components/ui";
@@ -631,7 +633,7 @@ const QuizScreen = ({ onNext }) => {
 };
 
 // ── RESULTS SCREEN ────────────────────────────────────────────────────────────
-const ResultsScreen = ({ score, onRestart }) => {
+const ResultsScreen = ({ score, onRestart, onMap }) => {
   const total = QUIZ.length;
   const pct = Math.round((score / total) * 100);
   const tier = score >= 5 ? { label: "Analyst", color: GOLD, emoji: "🏆", msg: "Outstanding. You've covered every core concept from qualitative analysis to behavioural finance. You're thinking like an investor." }
@@ -708,7 +710,7 @@ const ResultsScreen = ({ score, onRestart }) => {
       </div>
 
       <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
-        <Btn outline onClick={onRestart} small color={SLATE}>↺ Restart Module</Btn>
+        <Btn onClick={onMap} small style={{marginRight:8}}>← Module Map</Btn><Btn outline onClick={onRestart} small color={SLATE}>↺ Restart Module</Btn>
       </div>
     </Page>
   );
@@ -716,6 +718,8 @@ const ResultsScreen = ({ score, onRestart }) => {
 
 // ── APP ───────────────────────────────────────────────────────────────────────
 export default function Module6_2() {
+  const navigate = useNavigate();
+  const { completeModule } = useUser();
   const [screen, setScreen] = useState("behaviour");
   const [quizScore, setQuizScore] = useState(0);
   const go = s => { setScreen(s); window.scrollTo(0, 0); };
@@ -723,7 +727,7 @@ export default function Module6_2() {
   if (screen === "behaviour") return <BehaviourScreen onNext={() => go("mistakes")} onBack={() => go("behaviour")} />;
   if (screen === "mistakes") return <MistakesScreen onNext={() => go("sell")} onBack={() => go("behaviour")} />;
   if (screen === "sell") return <SellScreen onNext={() => go("quiz")} onBack={() => go("mistakes")} />;
-  if (screen === "quiz") return <QuizScreen onNext={s => { setQuizScore(s); go("results"); }} />;
-  if (screen === "results") return <ResultsScreen score={quizScore} onRestart={() => go("behaviour")} />;
+  if (screen === "quiz") return <QuizScreen onNext={s => { setQuizScore(s); completeModule("6.2"); go("results"); }} />;
+  if (screen === "results") return <ResultsScreen score={quizScore} onRestart={() => go("behaviour")} onMap={() => { completeModule("6.2"); navigate("/"); }} />;
   return null;
 }

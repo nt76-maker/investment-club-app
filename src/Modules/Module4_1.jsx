@@ -376,7 +376,7 @@ const ProfileRow = ({ pkey, profile }) => {
 };
 
 // ── PROFILE DETAIL ────────────────────────────────────────────────
-const ProfileDetail = ({ profile, score, onNext, onRestart }) => {
+const ProfileDetail = ({ profile, score, onNext, onRestart, onMap }) => {
   const idx = PROFILE_ORDER.indexOf(profile.id);
   const alloc = profile.naturalAlloc;
   const allocEntries = [
@@ -531,6 +531,7 @@ const ProfileDetail = ({ profile, score, onNext, onRestart }) => {
           <Btn onClick={onNext} style={{ fontSize:"15px", padding:"14px 32px" }}>
             Launch the Simulator <ChevronRight size={15}/>
           </Btn>
+          <div style={{ marginTop:16 }}><span onClick={onMap} style={{ fontFamily:FM, fontSize:11, color:GOLD, cursor:"pointer", letterSpacing:"0.08em" }}>← Back to Module Map</span></div>
         </div>
       </Page>
     </div>
@@ -539,6 +540,8 @@ const ProfileDetail = ({ profile, score, onNext, onRestart }) => {
 
 // ── APP ────────────────────────────────────────────────────────────
 export default function Module4_1() {
+  const navigate = useNavigate();
+  const { completeModule, setInvestorProfile } = useUser();
   const [screen, setScreen] = useState("opening");
   const [score, setScore] = useState(0);
   const [profile, setProfile] = useState(null);
@@ -547,6 +550,8 @@ export default function Module4_1() {
     const p = getProfile(s);
     setScore(s);
     setProfile(p);
+    setInvestorProfile(p);
+    completeModule("4.1");
     setScreen("reveal");
     window.scrollTo(0,0);
   };
@@ -570,7 +575,8 @@ export default function Module4_1() {
     <ProfileDetail
       profile={profile}
       score={score}
-      onNext={()=>alert("Module 4.2 — The Simulator — coming next!")}
+      onNext={()=>navigate("/module/4-2")}
+      onMap={()=>navigate("/")}
       onRestart={handleRestart}
     />
   );

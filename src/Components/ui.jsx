@@ -86,11 +86,11 @@ export const VT = ({ id, children }) => {
     "market index": "A measure of a group of stocks used to represent overall market performance.",
     "volatility": "How much and how quickly prices move up and down.",
     "liquidity": "How easily you can convert an investment to cash.",
-    "market correction": "A drop of 10–20% from a recent market peak.",
+    "market correction": "A drop of 10-20% from a recent market peak.",
     "portfolio": "Your complete collection of investments across all accounts.",
     "rebalancing": "Periodically adjusting your portfolio back to your target allocation.",
     "risk tolerance": "How much investment loss you can stomach without making panic decisions.",
-    "time horizon": "How long before you'll need your money.",
+    "time horizon": "How long before you will need your money.",
     "brokerage": "A company that acts as your middleman to buy and sell investments on your behalf.",
     "bid-ask spread": "The tiny gap between what buyers will pay and what sellers want.",
     "market order": "An instruction to buy or sell immediately at whatever the current price is.",
@@ -100,4 +100,31 @@ export const VT = ({ id, children }) => {
     "lump sum": "Investing all your money at once rather than spreading it out over time.",
     "compound growth": "Earning returns on your returns. The gains snowball over time.",
     "qualitative analysis": "Evaluating a company based on non-numerical factors like brand and management.",
-    "quantitative analysis": "Evaluating a company us
+    "quantitative analysis": "Evaluating a company using financial numbers and ratios.",
+    "moat": "A sustainable competitive advantage that protects a company from competitors.",
+    "market cap": "The total market value of a company. Share price times total shares outstanding.",
+    "revenue": "The total money a company brings in before any costs are deducted.",
+    "profit": "What is left after a company pays all its costs.",
+    "EPS": "Earnings Per Share. A company's total profit divided by its number of shares.",
+    "P/E ratio": "Price-to-Earnings ratio. Share price divided by EPS.",
+    "valuation": "How much the market thinks a company is worth.",
+  };
+  const def = defs[id];
+  if (!def) return (
+    <span style={{ borderBottom: "1px dashed " + GOLD, color: TP, cursor: "help" }}>{children}</span>
+  );
+  return (
+    <span style={{ position: "relative", display: "inline" }}>
+      <span onClick={() => setOpen(!open)} style={{ borderBottom: "1px dashed " + GOLD, color: TP, cursor: "pointer" }}>{children}</span>
+      {open && (
+        <span style={{
+          position: "absolute", bottom: "calc(100% + 6px)", left: 0,
+          background: SURF2, border: "1px solid " + BORDERHI, borderRadius: 8,
+          padding: "10px 14px", fontSize: 13, color: TB, fontFamily: FB,
+          width: 260, zIndex: 99, lineHeight: 1.6, display: "block",
+          boxShadow: "0 8px 32px rgba(0,0,0,0.6)"
+        }}>{def}</span>
+      )}
+    </span>
+  );
+};
